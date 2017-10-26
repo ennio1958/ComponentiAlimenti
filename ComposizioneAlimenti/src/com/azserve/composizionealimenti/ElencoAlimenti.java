@@ -28,9 +28,9 @@ public class ElencoAlimenti {
 		File input = new File(FONTE);
 		Document doc = Jsoup.parse(input, "UTF-8", "");
 		Element esTable = doc.select("table[id=tblResult]").get(0);
-		Elements provinceDoc = esTable.select("tr");
-		provinceDoc.remove(0); //titles
-		for(Element p:provinceDoc){
+		Elements alims = esTable.select("tr");
+		alims.remove(0); //titles
+		for(Element p:alims){
 			Elements fs = p.select("a[href]");
 			Element fs0 =fs.get(0);
 			String link= fs0.attr("href");
