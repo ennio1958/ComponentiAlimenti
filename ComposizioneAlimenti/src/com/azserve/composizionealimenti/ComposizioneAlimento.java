@@ -21,6 +21,7 @@ public class ComposizioneAlimento {
 	private final String linkAlimento;
 	private final String filePathRoot;
 	private String contenutiIn;
+	private String categoriaMerceologica;
 
 	public ComposizioneAlimento(final String linkAlimento,
 			final String filePathRoot) {
@@ -102,6 +103,38 @@ public class ComposizioneAlimento {
 			});
 
 			return codice+ "|" +contenutiIn;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	public String categoriaMerceologica() {
+		try {
+			Document doc = Jsoup.connect(linkAlimento).get();
+
+			Element titolo = doc.select(".titolo").first();
+			String titoloCompleto = titolo.text();
+			String codice = extractCodice(titoloCompleto);
+			Element tabellaComponenti = doc.select("table[id=tblComponenti]")
+					.first();
+			Elements trs = tabellaComponenti.select(">tbody>tr");
+
+			trs.forEach(tr -> {
+				Elements tds = tr.select(">td");
+				for (Element td : tds) {
+					String valoreColonna = td.text();
+					if(valoreColonna.startsWith("Categoria merceologica:")){
+						 valoreColonna = valoreColonna.substring("Categoria merceologica:".length());
+						 valoreColonna = valoreColonna.split("\\-")[0];
+						 categoriaMerceologica=valoreColonna.trim();
+						break;
+					}
+				}
+			});
+
+			return codice+ "|" +categoriaMerceologica;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

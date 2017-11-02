@@ -17,8 +17,9 @@ public class ElencoAlimenti {
 
 	public static void main(String[] args) throws IOException {
 		ElencoAlimenti x = new ElencoAlimenti();
-		x.faSchede();
-		x.faContenuti();
+//		x.faSchede();
+//		x.faContenuti();
+		x.faCategorie();
 	}
 
 	private void faSchede() throws IOException {
@@ -36,6 +37,12 @@ public class ElencoAlimenti {
 		});
 	}
 
+	public void faCategorie() throws IOException {
+		elenco().forEach(s -> {
+			ComposizioneAlimento ca = new ComposizioneAlimento(s, FILE_PATH);
+			System.out.println(ca.categoriaMerceologica());
+		});
+	}
 	public List<String> elenco() throws IOException {
 		List<String> ris = new ArrayList<String>();
 		File input = new File(FONTE);
