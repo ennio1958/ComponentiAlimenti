@@ -20,6 +20,7 @@ public class ComposizioneAlimento {
 	private final static String PRIMO_CAPITOLO = "COMPONENTI PRINCIPALI";
 	private final String linkAlimento;
 	private final String filePathRoot;
+	private String contenutiIn;
 
 	public ComposizioneAlimento(final String linkAlimento,
 			final String filePathRoot) {
@@ -76,6 +77,38 @@ public class ComposizioneAlimento {
 
 	}
 
+	
+
+	public String datoContenutiIn() {
+		try {
+			Document doc = Jsoup.connect(linkAlimento).get();
+
+			Element titolo = doc.select(".titolo").first();
+			String titoloCompleto = titolo.text();
+			String codice = extractCodice(titoloCompleto);
+			Element tabellaComponenti = doc.select("table[id=tblComponenti]")
+					.first();
+			Elements trs = tabellaComponenti.select(">tbody>tr");
+
+			trs.forEach(tr -> {
+				Elements tds = tr.select(">td");
+				for (Element td : tds) {
+					String valoreColonna = td.text();
+					if(valoreColonna.startsWith("Contenuti in")){
+						contenutiIn=valoreColonna;
+						break;
+					}
+				}
+			});
+
+			return codice+ "|" +contenutiIn;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
 	private String extractCodice(String titoloCompleto) {
 		Pattern p = Pattern.compile("[0-9]+");
 		Matcher m = p.matcher(titoloCompleto);
